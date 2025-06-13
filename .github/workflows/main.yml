@@ -1,0 +1,22 @@
+on:
+  schedule:
+    - cron: '0 * * * *'  # 每 小时 时间 0 分钟触发
+  workflow_dispatch:
+
+jobs:
+  commit-job:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Update log
+        run: |
+          echo "$(date -u)" >> log.txt
+
+      - name: Commit and push
+        run: |
+          git config --global user.email "tr@wenturc.com"
+          git config --global user.name "Larch-C"
+          git add log.txt
+          git commit -m "Daily commit $(date -u)" || echo "Nothing to commit"
+          git push
