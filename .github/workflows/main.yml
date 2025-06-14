@@ -90,11 +90,35 @@ jobs:
           # 获取仓库大小
           REPO_SIZE=$(du -sh . | cut -f1)
           
-          # 获取今天0点的时间戳（按北京时间）
-          TODAY_START=$(date -d "today 00:00:00" --iso-8601=seconds)
+          # 获取今天的日期（北京时间）
+          TODAY_DATE=$(date +%Y-%m-%d)
           
-          # 获取最近提交数量（今天按北京时间计算）
-          TODAY_COMMITS=$(git log --since="$TODAY_START" --oneline | wc -l)
+          # 调试：显示当前日期和最近的提交日期
+          echo "🐾 调试信息："
+          echo "今天日期 (CST): $TODAY_DATE"
+          echo "最近5个提交的日期:"
+          git log -5 --format="%cd" --date=format:"%Y-%m-%d %H:%M:%S %Z"
+          
+          # 使用环境变量设置git的时区，然后统计今天的提交
+          export TZ='Asia/Shanghai'
+          
+          # 尝试多种方法统计今天的提交
+          METHOD1=$(git log --format="%cd" --date=format:"%Y-%m-%d" | grep "^$TODAY_DATE" | wc -l)
+          METHOD2=$(git log --since="$TODAY_DATE 00:00:00" --until="$TODAY_DATE 23:59:59" --oneline | wc -l)
+          METHOD3=$(git log --since="24 hours ago" --oneline | wc -l)
+          
+          echo "方法1统计结果: $METHOD1"
+          echo "方法2统计结果: $METHOD2" 
+          echo "方法3统计结果: $METHOD3"
+          
+          # 选择最合理的结果
+          if [ "$METHOD2" -gt 0 ]; then
+            TODAY_COMMITS=$METHOD2
+          elif [ "$METHOD1" -gt 0 ]; then
+            TODAY_COMMITS=$METHOD1
+          else
+            TODAY_COMMITS=$METHOD3
+          fi
           
           echo "FILE_COUNT=$FILE_COUNT" >> $GITHUB_ENV
           echo "REPO_SIZE=$REPO_SIZE" >> $GITHUB_ENV
