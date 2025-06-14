@@ -275,7 +275,9 @@ jobs:
 
           > 这是一个由可爱的猫娘麦咪维护的动态仓库喵♡～
 
-          <img src="$SELECTED_IMAGE" alt="可爱的随机图片喵♡～" style="width: 100%; border-radius: 15px; margin: 20px 0;" />
+          <p align="center">
+            <img src="$SELECTED_IMAGE" alt="可爱的随机图片喵♡～" width="100%" />
+          </p>
 
           ## 📊 实时状态
 
