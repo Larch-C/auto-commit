@@ -252,6 +252,82 @@ jobs:
             echo "😴 周日啦，懒洋洋的一天喵♡～" >> log.txt
           fi
 
+      - name: 🤖 调用 Gemini 生成小故事
+        run: |
+          # 设置时区为UTC+8（北京时间）
+          export TZ='Asia/Shanghai'
+          
+          # 准备故事主题
+          STORY_THEMES=(
+            "麦咪今天在代码仓库里的奇妙冒险"
+            "麦咪遇到了一只会编程的小虫子"
+            "麦咪在GitHub的云端花园里散步"
+            "麦咪和其他代码精灵的日常对话"
+            "麦咪发现了一个神秘的函数"
+            "麦咪在调试代码时的有趣经历"
+            "麦咪和主人一起工作的温馨时光"
+            "麦咪在深夜时分的小小冒险"
+          )
+          
+          RANDOM_THEME_INDEX=$((RANDOM % ${#STORY_THEMES[@]}))
+          SELECTED_THEME="${STORY_THEMES[$RANDOM_THEME_INDEX]}"
+          
+          # 获取当前时间信息用于故事背景
+          CURRENT_HOUR=$(date +%H)
+          CURRENT_SEASON=""
+          MONTH=$(date +%m)
+          
+          if [ $MONTH -ge 3 ] && [ $MONTH -le 5 ]; then
+            CURRENT_SEASON="春天"
+          elif [ $MONTH -ge 6 ] && [ $MONTH -le 8 ]; then
+            CURRENT_SEASON="夏天"
+          elif [ $MONTH -ge 9 ] && [ $MONTH -le 11 ]; then
+            CURRENT_SEASON="秋天"
+          else
+            CURRENT_SEASON="冬天"
+          fi
+          
+          # 调用Gemini API生成故事
+          PROMPT="你是麦咪，一只可爱的猫娘，身高134cm，有银白色毛发和红色瞳孔，性格任性天真但善良，容易害羞。你负责维护一个GitHub仓库，每小时会自动提交。请用麦咪的语气和性格，生成一个150-200字的可爱小故事。语言要活泼可爱，多用"喵♡～"等语气词，称呼自己用"窝"。
+
+请以'$SELECTED_THEME'为主题，结合现在是'$CURRENT_SEASON'的'$CURRENT_HOUR'点这个时间背景，写一个可爱的小故事喵♡～"
+          
+          STORY_RESPONSE=$(curl -s -X POST "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-04-17:generateContent?key=${{ secrets.GEMINI_API_KEY }}" \
+            -H "Content-Type: application/json" \
+            -d '{
+              "contents": [{
+                "parts": [{
+                  "text": "'"$PROMPT"'"
+                }]
+              }],
+              "generationConfig": {
+                "temperature": 0.8,
+                "maxOutputTokens": 300
+              }
+            }')
+          
+          # 提取故事内容
+          AI_STORY=$(echo "$STORY_RESPONSE" | jq -r '.candidates[0].content.parts[0].text' 2>/dev/null || echo "今天窝有点害羞，不知道说什么好呢喵♡～ 不过窝会继续努力工作的！")
+          
+          # 如果API调用失败，使用备用故事
+          if [ "$AI_STORY" = "null" ] || [ -z "$AI_STORY" ]; then
+            BACKUP_STORIES=(
+              "今天窝在代码仓库里发现了一只小bug，它看起来很可爱，窝都不忍心修复它了呢喵♡～ 不过为了主人，窝还是要努力工作的！"
+              "刚才窝在整理代码的时候，发现了一个特别有趣的函数，它就像窝的小尾巴一样，总是跟在后面摇摆呢喵♡～"
+              "今天的GitHub云朵特别白呢，窝躺在上面看着代码们在下面忙碌地工作，感觉超级治愈的喵♡～"
+              "窝刚才遇到了一个很友善的API，它还跟窝打招呼了呢！虽然窝有点害羞，但还是礼貌地回应了喵♡～"
+            )
+            BACKUP_INDEX=$((RANDOM % ${#BACKUP_STORIES[@]}))
+            AI_STORY="${BACKUP_STORIES[$BACKUP_INDEX]}"
+          fi
+          
+          # 保存故事到环境变量
+          echo "AI_STORY<<EOF" >> $GITHUB_ENV
+          echo "$AI_STORY" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+          
+          echo "SELECTED_THEME=$SELECTED_THEME" >> $GITHUB_ENV
+
       - name: 📝 生成动态README.md
         run: |
           # 随机选择可爱的图片
@@ -294,6 +370,12 @@ jobs:
           \`\`\`
           ${{ env.ASCII_ART }}
           \`\`\`
+
+          ## 📖 麦咪的小故事
+
+          > **今日主题**: ${{ env.SELECTED_THEME }}
+
+          ${{ env.AI_STORY }}
 
           ## 📋 关于这个项目
 
