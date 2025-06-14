@@ -213,7 +213,7 @@ jobs:
       - name: 📝 生成动态README.md
         run: |
           # 创建动态README.md
-          cat > README.md << 'EOL'
+          cat > README.md << EOF
           # 🐱 麦咪的动态仓库 
 
           > 这是一个由可爱的猫娘麦咪维护的动态仓库喵♡～
@@ -230,9 +230,9 @@ jobs:
 
           ## 🎨 今日心情
 
-          ```
+          \`\`\`
           ${{ env.ASCII_ART }}
-          ```
+          \`\`\`
 
           ## 📋 关于这个项目
 
@@ -255,16 +255,16 @@ jobs:
 
           ## 📚 最近的日志记录
 
-          EOL
+          \`\`\`
+          === 🐾 最近的活动记录 🐾 ===
+          EOF
 
           # 添加最近的几条日志记录
-          echo "```" >> README.md
-          echo "=== 🐾 最近的活动记录 🐾 ===" >> README.md
           tail -n 20 log.txt >> README.md 2>/dev/null || echo "还没有日志记录呢喵♡～" >> README.md
-          echo "```" >> README.md
+          echo '```' >> README.md
 
           # 添加更多动态内容
-          cat >> README.md << 'EOL'
+          cat >> README.md << 'EOF'
 
           ## 🎯 工作流详情
 
@@ -290,7 +290,7 @@ jobs:
 
           ## 🎊 节日问候
 
-          EOL
+          EOF
 
           # 添加节假日检查到README
           export TZ='Asia/Shanghai'
@@ -328,11 +328,11 @@ jobs:
           echo "$HOLIDAY_GREETING" >> README.md
           echo "" >> README.md
 
-          cat >> README.md << 'EOL'
+          cat >> README.md << 'EOF'
 
           ## 🌟 今日运气
 
-          EOL
+          EOF
 
           # 添加随机的运气预测
           LUCK_MESSAGES=(
@@ -346,11 +346,12 @@ jobs:
           LUCK_INDEX=$((RANDOM % ${#LUCK_MESSAGES[@]}))
           echo "${LUCK_MESSAGES[$LUCK_INDEX]}" >> README.md
 
-          cat >> README.md << 'EOL'
+          # 添加最后的结尾部分
+          cat >> README.md << EOF
 
           ---
 
           *这个README.md由麦咪的自动化工作流生成，每小时更新一次喵♡～*
 
           **上次更新**: ${{ env.CURRENT_TIME }}
-          EOL
+          EOF
