@@ -195,21 +195,6 @@ jobs:
             echo "😴 周日啦，懒洋洋的一天喵♡～" >> log.txt
           fi
 
-      - name: 🚀 提交和推送更改
-        run: |
-          git config --global user.email "tr@wenturc.com"
-          git config --global user.name "Larch-C"
-          git add log.txt README.md
-          
-          # 使用随机提交消息
-          git commit -m "${{ env.DECO }} ${{ env.COMMIT_MSG }} (第${{ env.RUN_COUNT }}次)" || echo "没有需要提交的内容喵♡～"
-          git push
-
-      - name: 🎀 任务完成
-        run: |
-          echo "✅ 麦咪的工作完成啦喵♡～"
-          echo "💕 下次再见哦，主人喵♡～"
-
       - name: 📝 生成动态README.md
         run: |
           # 创建动态README.md
@@ -355,3 +340,18 @@ jobs:
 
           **上次更新**: ${{ env.CURRENT_TIME }}
           EOF
+
+      - name: 🚀 提交和推送更改
+        run: |
+          git config --global user.email "tr@wenturc.com"
+          git config --global user.name "Larch-C"
+          git add log.txt README.md
+          
+          # 使用随机提交消息
+          git commit -m "${{ env.DECO }} ${{ env.COMMIT_MSG }} (第${{ env.RUN_COUNT }}次)" || echo "没有需要提交的内容喵♡～"
+          git push
+
+      - name: 🎀 任务完成
+        run: |
+          echo "✅ 麦咪的工作完成啦喵♡～"
+          echo "💕 下次再见哦，主人喵♡～"
