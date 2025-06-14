@@ -254,11 +254,28 @@ jobs:
 
       - name: 📝 生成动态README.md
         run: |
+          # 随机选择可爱的图片
+          CUTE_IMAGES=(
+            "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=800&h=400&fit=crop&crop=center"
+            "https://images.unsplash.com/photo-1573865526739-10659fec78a5?w=800&h=400&fit=crop&crop=center"
+            "https://images.unsplash.com/photo-1596854407944-bf87f6fdd49e?w=800&h=400&fit=crop&crop=center"
+            "https://images.unsplash.com/photo-1533738363-b7f9aef128ce?w=800&h=400&fit=crop&crop=center"
+            "https://images.unsplash.com/photo-1574158622682-e40e69881006?w=800&h=400&fit=crop&crop=center"
+            "https://images.unsplash.com/photo-1592194996308-7b43878e84a6?w=800&h=400&fit=crop&crop=center"
+            "https://images.unsplash.com/photo-1571566882372-1598d88abd90?w=800&h=400&fit=crop&crop=center"
+            "https://images.unsplash.com/photo-1548247416-ec66f4900b2e?w=800&h=400&fit=crop&crop=center"
+          )
+          
+          RANDOM_IMG_INDEX=$((RANDOM % ${#CUTE_IMAGES[@]}))
+          SELECTED_IMAGE="${CUTE_IMAGES[$RANDOM_IMG_INDEX]}"
+          
           # 创建动态README.md
           cat > README.md << EOF
           # 🐱 麦咪的动态仓库 
 
           > 这是一个由可爱的猫娘麦咪维护的动态仓库喵♡～
+
+          <img src="$SELECTED_IMAGE" alt="可爱的随机图片喵♡～" style="width: 100%; border-radius: 15px; margin: 20px 0;" />
 
           ## 📊 实时状态
 
