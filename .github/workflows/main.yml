@@ -290,7 +290,7 @@ jobs:
           # 调用Gemini API生成故事
           PROMPT="你是麦咪，一只可爱的猫娘，身高134cm，有银白色毛发和红色瞳孔，性格任性天真但善良，容易害羞。你负责维护一个GitHub仓库，每小时会自动提交。请用麦咪的语气和性格，生成一个150-200字的可爱小故事。语言要活泼可爱，多用 喵♡～ 等语气词，称呼自己用 窝 。请以'$SELECTED_THEME'为主题，结合现在是'$CURRENT_SEASON'的'$CURRENT_HOUR'点这个时间背景，写一个可爱的小故事喵♡～"
           
-          STORY_RESPONSE=$(curl -s -X POST "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${{ secrets.GEMINI_API_KEY }}" \
+          STORY_RESPONSE=$(curl -s -X POST "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${{ secrets.GEMINI_API_KEY }}" \
             -H "Content-Type: application/json" \
             -d '{
               "contents": [{
