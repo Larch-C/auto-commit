@@ -168,6 +168,10 @@ jobs:
           # 处理换行符
           ASCII_ART=$(echo -e "$ASCII_ART")
           
+          # 清理ASCII_ART中的特殊字符，防止shell解析错误
+          ASCII_ART=$(echo "$ASCII_ART" | sed 's/`/"/g')     # 移除反引号
+          ASCII_ART=$(echo "$ASCII_ART" | sed 's/\$/\\$/g')  # 转义美元符号
+          
           echo "ASCII_ART<<EOF" >> $GITHUB_ENV
           echo "$ASCII_ART" >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
@@ -318,6 +322,18 @@ jobs:
             BACKUP_INDEX=$((RANDOM % ${#BACKUP_STORIES[@]}))
             AI_STORY="${BACKUP_STORIES[$BACKUP_INDEX]}"
           fi
+          
+          # 清理AI_STORY中的特殊字符，防止shell解析错误
+          # 移除反引号，替换为普通引号
+          AI_STORY=$(echo "$AI_STORY" | sed 's/`/"/g')
+          # 转义其他可能有问题的字符
+          AI_STORY=$(echo "$AI_STORY" | sed 's/\\/\\\\/g')  # 转义反斜杠
+          AI_STORY=$(echo "$AI_STORY" | sed 's/\$/\\$/g')   # 转义美元符号
+          AI_STORY=$(echo "$AI_STORY" | sed 's/!/\\!/g')    # 转义感叹号
+          AI_STORY=$(echo "$AI_STORY" | sed 's/\*/\\*/g')   # 转义星号
+          AI_STORY=$(echo "$AI_STORY" | sed 's/\?/\\?/g')   # 转义问号
+          # 移除可能导致问题的控制字符
+          AI_STORY=$(echo "$AI_STORY" | tr -d '\000-\010\013\014\016-\037\177')
           
           # 保存故事到环境变量
           echo "AI_STORY<<EOF" >> $GITHUB_ENV
