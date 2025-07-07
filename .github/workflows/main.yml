@@ -507,15 +507,13 @@ jobs:
           LUCK_INDEX=$((RANDOM % ${#LUCK_MESSAGES[@]}))
           echo "${LUCK_MESSAGES[$LUCK_INDEX]}" >> README.md
 
-          # 添加最后的结尾部分
-          cat >> README.md << EOF
-
-          ---
-
-          *这个README.md由麦咪的自动化工作流生成，每小时更新一次喵♡～*
-
-          **上次更新**: ${{ env.CURRENT_TIME }}
-          EOF
+          # 添加最后的结尾部分 - 使用安全的方式避免变量展开问题
+          echo "" >> README.md
+          echo "---" >> README.md
+          echo "" >> README.md
+          echo "*这个README.md由麦咪的自动化工作流生成，每小时更新一次喵♡～*" >> README.md
+          echo "" >> README.md
+          echo "**上次更新**: ${{ env.CURRENT_TIME }}" >> README.md
 
       - name: 🚀 提交和推送更改
         run: |
