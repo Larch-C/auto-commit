@@ -168,13 +168,8 @@ jobs:
           # 处理换行符
           ASCII_ART=$(echo -e "$ASCII_ART")
           
-          # 清理ASCII_ART中的特殊字符，防止shell解析错误
-          ASCII_ART=$(echo "$ASCII_ART" | sed 's/`/"/g')     # 移除反引号
-          ASCII_ART=$(echo "$ASCII_ART" | sed 's/\$/\\$/g')  # 转义美元符号
-          
-          echo "ASCII_ART<<EOF" >> $GITHUB_ENV
-          echo "$ASCII_ART" >> $GITHUB_ENV
-          echo "EOF" >> $GITHUB_ENV
+          # 将ASCII_ART也写入临时文件，避免管道符号等特殊字符问题
+          echo "$ASCII_ART" > /tmp/ascii_art.txt
 
       - name: ✏️ 更新日志文件
         run: |
@@ -185,7 +180,8 @@ jobs:
           echo "💾 仓库大小: ${{ env.REPO_SIZE }}" >> log.txt
           echo "📝 今日提交数: ${{ env.TODAY_COMMITS }}" >> log.txt
           echo "" >> log.txt
-          echo "${{ env.ASCII_ART }}" >> log.txt
+          # 从临时文件读取ASCII艺术内容到日志
+          cat /tmp/ascii_art.txt >> log.txt 2>/dev/null || echo "ASCII艺术生成失败喵♡～" >> log.txt
           echo "" >> log.txt
           echo "────────────────────────────────" >> log.txt
           echo "" >> log.txt
@@ -237,7 +233,7 @@ jobs:
           
           # 每月特殊日期喵♡～
           case $MONTH_DAY in
-            "*/13") echo "🔮 今天是13号呢，不过窝不迷信喵♡～" >> log.txt ;;
+            "*-13") echo "🔮 今天是13号呢，不过窝不迷信喵♡～" >> log.txt ;;
           esac
           
           # 特殊时间点的消息
@@ -294,12 +290,13 @@ jobs:
           # 调用Gemini API生成故事
           PROMPT="你是麦咪，一只可爱的猫娘，身高134cm，有银白色毛发和红色瞳孔，性格任性天真但善良，容易害羞。你负责维护一个GitHub仓库，每小时会自动提交。请用麦咪的语气和性格，生成一个150-200字的可爱小故事。语言要活泼可爱，多用 喵♡～ 等语气词，称呼自己用 窝 。请以'$SELECTED_THEME'为主题，结合现在是'$CURRENT_SEASON'的'$CURRENT_HOUR'点这个时间背景，写一个可爱的小故事喵♡～"
           
-          STORY_RESPONSE=$(curl -s -X POST "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${{ secrets.GEMINI_API_KEY }}" \
-            -H "Content-Type: application/json" \
-            -d '{
+          # 使用jq安全地构建JSON，避免JSON注入问题
+          JSON_PAYLOAD=$(jq -n \
+            --arg prompt "$PROMPT" \
+            '{
               "contents": [{
                 "parts": [{
-                  "text": "'"$PROMPT"'"
+                  "text": $prompt
                 }]
               }],
               "generationConfig": {
@@ -307,6 +304,10 @@ jobs:
                 "maxOutputTokens": 300
               }
             }')
+          
+          STORY_RESPONSE=$(curl -s -X POST "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${{ secrets.GEMINI_API_KEY }}" \
+            -H "Content-Type: application/json" \
+            -d "$JSON_PAYLOAD")
           
           # 提取故事内容
           AI_STORY=$(echo "$STORY_RESPONSE" | jq -r '.candidates[0].content.parts[0].text' 2>/dev/null || echo "今天窝有点害羞，不知道说什么好呢喵♡～ 不过窝会继续努力工作的！")
@@ -375,7 +376,12 @@ jobs:
           ## 🎨 今日心情
 
           ```
-          ${{ env.ASCII_ART }}
+          EOF
+          
+          # 从临时文件读取ASCII艺术内容，避免管道符号等特殊字符问题
+          cat /tmp/ascii_art.txt >> README.md
+          
+          cat >> README.md << 'EOF'
           ```
 
           ## 📖 麦咪的小故事
@@ -517,14 +523,20 @@ jobs:
           git config --global user.name "Larch-C"
           git add log.txt README.md
           
-          # 使用随机提交消息
-          git commit -m "${{ env.DECO }} ${{ env.COMMIT_MSG }} (第${{ env.RUN_COUNT }}次)" || echo "没有需要提交的内容喵♡～"
+          # 安全地构建提交消息，避免特殊字符问题
+          echo "${{ env.DECO }} ${{ env.COMMIT_MSG }} (第${{ env.RUN_COUNT }}次)" > /tmp/commit_msg.txt
+          
+          # 使用临时文件中的提交消息
+          git commit -F /tmp/commit_msg.txt || echo "没有需要提交的内容喵♡～"
           git push
+          
+          # 清理提交消息临时文件
+          rm -f /tmp/commit_msg.txt
 
       - name: 🎀 任务完成
         run: |
           echo "✅ 麦咪的工作完成啦喵♡～"
           echo "💕 下次再见哦，主人喵♡～"
           
-          # 清理临时文件
-          rm -f /tmp/ai_story.txt
+          # 清理所有临时文件
+          rm -f /tmp/ai_story.txt /tmp/ascii_art.txt /tmp/commit_msg.txt
