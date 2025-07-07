@@ -324,21 +324,14 @@ jobs:
           fi
           
           # 清理AI_STORY中的特殊字符，防止shell解析错误
-          # 移除反引号，替换为普通引号
-          AI_STORY=$(echo "$AI_STORY" | sed 's/`/"/g')
-          # 转义其他可能有问题的字符
-          AI_STORY=$(echo "$AI_STORY" | sed 's/\\/\\\\/g')  # 转义反斜杠
-          AI_STORY=$(echo "$AI_STORY" | sed 's/\$/\\$/g')   # 转义美元符号
-          AI_STORY=$(echo "$AI_STORY" | sed 's/!/\\!/g')    # 转义感叹号
-          AI_STORY=$(echo "$AI_STORY" | sed 's/\*/\\*/g')   # 转义星号
-          AI_STORY=$(echo "$AI_STORY" | sed 's/\?/\\?/g')   # 转义问号
+          # 只处理最危险的字符，保留颜文字的可爱
+          AI_STORY=$(echo "$AI_STORY" | sed 's/`/"/g')       # 移除反引号，替换为普通引号
+          AI_STORY=$(echo "$AI_STORY" | sed 's/\$/\\$/g')    # 转义美元符号
           # 移除可能导致问题的控制字符
           AI_STORY=$(echo "$AI_STORY" | tr -d '\000-\010\013\014\016-\037\177')
           
-          # 保存故事到环境变量
-          echo "AI_STORY<<EOF" >> $GITHUB_ENV
-          echo "$AI_STORY" >> $GITHUB_ENV
-          echo "EOF" >> $GITHUB_ENV
+          # 为了避免颜文字括号问题，将AI_STORY写入临时文件而不是环境变量
+          echo "$AI_STORY" > /tmp/ai_story.txt
           
           echo "SELECTED_THEME=$SELECTED_THEME" >> $GITHUB_ENV
 
@@ -389,7 +382,12 @@ jobs:
 
           > **今日主题**: ${{ env.SELECTED_THEME }}
 
-          ${{ env.AI_STORY }}
+          EOF
+          
+          # 从临时文件读取AI故事内容，避免shell解析颜文字问题
+          cat /tmp/ai_story.txt >> README.md
+          
+          cat >> README.md << 'EOF'
 
           ## 📋 关于这个项目
 
@@ -527,3 +525,6 @@ jobs:
         run: |
           echo "✅ 麦咪的工作完成啦喵♡～"
           echo "💕 下次再见哦，主人喵♡～"
+          
+          # 清理临时文件
+          rm -f /tmp/ai_story.txt
