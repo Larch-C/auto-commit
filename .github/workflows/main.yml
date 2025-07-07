@@ -1,540 +1,192 @@
-name: 🐱 麦咪的自动提交工作流
+Run # 随机选择可爱的图片
+  # 随机选择可爱的图片
+  CUTE_IMAGES=(
+    "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=800&h=400&fit=crop&crop=center"
+    "https://images.unsplash.com/photo-1573865526739-10659fec78a5?w=800&h=400&fit=crop&crop=center"
+    "https://images.unsplash.com/photo-1596854407944-bf87f6fdd49e?w=800&h=400&fit=crop&crop=center"
+    "https://images.unsplash.com/photo-1533738363-b7f9aef128ce?w=800&h=400&fit=crop&crop=center"
+    "https://images.unsplash.com/photo-1574158622682-e40e69881006?w=800&h=400&fit=crop&crop=center"
+    "https://images.unsplash.com/photo-1592194996308-7b43878e84a6?w=800&h=400&fit=crop&crop=center"
+    "https://images.unsplash.com/photo-1571566882372-1598d88abd90?w=800&h=400&fit=crop&crop=center"
+    "https://images.unsplash.com/photo-1548247416-ec66f4900b2e?w=800&h=400&fit=crop&crop=center"
+  )
+  
+  RANDOM_IMG_INDEX=$((RANDOM % ${#CUTE_IMAGES[@]}))
+  SELECTED_IMAGE="${CUTE_IMAGES[$RANDOM_IMG_INDEX]}"
+  
+  # 创建动态README.md
+  cat > README.md << EOF
+  # 🐱 麦咪的动态仓库 
+  
+  > 这是一个由可爱的猫娘麦咪维护的动态仓库喵♡～
+  
+  <p align="center">
+    <img src="$SELECTED_IMAGE" alt="可爱的随机图片喵♡～" width="100%" />
+  </p>
+  
+  ## 📊 实时状态
+  
+  **🌆 晚上好哦，今天辛苦啦喵♡～**
+  
+  - 🕐 **最后更新时间**: Mon Jul  7 21:49:39 CST 2025
+  - 📈 **工作流运行次数**: 485 次
+  - 📁 **项目文件数量**: 3 个
+  - 💾 **仓库大小**: 1.1M
+  - 📝 **今日提交数**: 20 次
+  
+  ## 🎨 今日心情
+  
+  ```
+  EOF
+  
+  # 从临时文件读取ASCII艺术内容，避免管道符号等特殊字符问题
+  cat /tmp/ascii_art.txt >> README.md
+  
+  cat >> README.md << 'EOF'
+  ```
+  
+  ## 📖 麦咪的小故事
+  
+  > **今日主题**: 麦咪在GitHub的云端花园里散步
+  
+  EOF
+  
+  # 从临时文件读取AI故事内容，避免shell解析颜文字问题
+  cat /tmp/ai_story.txt >> README.md
+  
+  cat >> README.md << 'EOF'
+  
+  ## 📋 关于这个项目
+  
+  这个仓库每小时自动更新一次，记录着麦咪的工作状态喵♡～
+  
+  ### ✨ 功能特色
+  
+  - 🕐 **智能时间问候**: 根据不同时间段显示合适的问候语
+  - 🎲 **随机元素**: 每次更新都有随机的提交消息和装饰
+  - 📊 **实时统计**: 自动统计项目状态和运行数据
+  - 🎨 **ASCII艺术**: 随机显示可爱的字符画
+  - 🗓️ **特殊事件**: 在特殊时间点显示提醒消息
+  - 📝 **动态文档**: README.md实时更新，永远保持最新状态
+  
+  ### 🕒 运行时间表
+  
+  - 每小时整点自动运行
+  - 支持手动触发
+  - 全天候24/7运行
+  
+  ## 📚 最近的日志记录
+  
+  ```
+  === 🐾 最近的活动记录 🐾 ===
+  EOF
+  
+  # 添加最近的几条日志记录
+  tail -n 20 log.txt >> README.md 2>/dev/null || echo "还没有日志记录呢喵♡～" >> README.md
+  echo '```' >> README.md
+  
+  # 添加更多动态内容
+  cat >> README.md << 'EOF'
+  
+  ## 🎯 工作流详情
+  
+  这个可爱的工作流会执行以下步骤：
+  
+  1. 🎀 **准备工作** - 麦咪开始准备工作
+  2. ⏰ **时间检测** - 获取当前时间并生成问候语
+  3. 📊 **数据收集** - 统计项目文件和状态信息
+  4. 🎨 **艺术创作** - 随机选择可爱的ASCII艺术
+  5. ✏️ **记录更新** - 更新日志文件
+  6. 📝 **文档更新** - 生成这个动态README
+  7. 🎉 **特殊检查** - 检查是否有特殊时间事件
+  8. 🚀 **提交推送** - 将更改推送到仓库
+  9. 🎀 **任务完成** - 麦咪完成工作
+  
+  ## 💕 关于麦咪
+  
+  麦咪是一只可爱的猫娘，负责维护这个仓库喵♡～
+  - 身高: 134cm
+  - 特征: 银白色毛发，红色瞳孔，喜欢穿白色丝袜
+  - 性格: 任性天真但很善良，容易害羞
+  - 爱好: 浪漫和可爱的东西
+  
+  ## 🎊 节日问候
+  
+  EOF
+  
+  # 添加节假日检查到README
+  export TZ='Asia/Shanghai'
+  MONTH_DAY=$(date +%m-%d)
+  
+  # 检查今天是否是特殊节日
+  HOLIDAY_GREETING=""
+  case $MONTH_DAY in
+    "01-01") HOLIDAY_GREETING="🎊 新年快乐呀！新的一年要更加努力喵♡～" ;;
+    "02-14") HOLIDAY_GREETING="💝 情人节快乐！爱要大声说出来喵♡～" ;;
+    "02-22") HOLIDAY_GREETING="🐱 今天是猫咪节！窝最喜欢这个节日啦喵♡～" ;;
+    "03-08") HOLIDAY_GREETING="🌸 女神节快乐！所有的女孩子都是最棒的喵♡～" ;;
+    "03-19"|"03-20"|"03-21"|"03-22") HOLIDAY_GREETING="🌸 春分时节到啦！春天真的来了呢喵♡～" ;;
+    "04-01") HOLIDAY_GREETING="🃏 愚人节快乐！不过窝不会骗主人的喵♡～" ;;
+    "05-01") HOLIDAY_GREETING="🎌 劳动节快乐！今天要好好休息喵♡～" ;;
+    "05-04") HOLIDAY_GREETING="🌟 青年节快乐！永远保持年轻的心喵♡～" ;;
+    "06-01") HOLIDAY_GREETING="🎈 儿童节快乐！每个人心中都有个小孩子喵♡～" ;;
+    "06-20"|"06-21"|"06-22"|"06-23") HOLIDAY_GREETING="☀️ 夏至时节到啦！一年中白天最长的日子喵♡～" ;;
+    "07-01") HOLIDAY_GREETING="🎉 建党节快乐！祖国越来越强大喵♡～" ;;
+    "08-01") HOLIDAY_GREETING="⭐ 建军节快乐！向军人叔叔们致敬喵♡～" ;;
+    "08-08") HOLIDAY_GREETING="🐾 今天是国际猫咪日！所有的猫咪都是天使喵♡～" ;;
+    "09-10") HOLIDAY_GREETING="🌺 教师节快乐！感谢所有的老师们喵♡～" ;;
+    "09-22"|"09-23"|"09-24"|"09-25") HOLIDAY_GREETING="🍂 秋分时节到啦！秋天的气息越来越浓喵♡～" ;;
+    "10-01") HOLIDAY_GREETING="🇨🇳 国庆节快乐！祖国生日快乐喵♡～" ;;
+    "10-24") HOLIDAY_GREETING="👩‍💻 程序员节快乐！写代码的大家辛苦啦喵♡～" ;;
+    "10-29") HOLIDAY_GREETING="🐈 今天是国际猫咪日（美国）！猫咪是最可爱的生物喵♡～" ;;
+    "11-11") HOLIDAY_GREETING="🛒 双十一购物节！理性消费哦喵♡～" ;;
+    "12-20"|"12-21"|"12-22"|"12-23") HOLIDAY_GREETING="❄️ 冬至时节到啦！要记得吃汤圆保暖喵♡～" ;;
+    "12-24") HOLIDAY_GREETING="🎄 平安夜快乐！愿大家都平安喵♡～" ;;
+    "12-25") HOLIDAY_GREETING="🎅 圣诞节快乐！圣诞老人会给好孩子礼物喵♡～" ;;
+    "12-31") HOLIDAY_GREETING="🎆 跨年夜快乐！感谢这一年的陪伴喵♡～" ;;
+    *) HOLIDAY_GREETING="📅 今天是平凡而美好的一天喵♡～" ;;
+  esac
+  
+  echo "$HOLIDAY_GREETING" >> README.md
+  echo "" >> README.md
+  
+  cat >> README.md << 'EOF'
+  
+  ## 🌟 今日运气
+  
+  EOF
+  
+  # 添加随机的运气预测
+  LUCK_MESSAGES=(
+    "✨ 今天的运气超级好呢喵♡～"
+    "🍀 今天会遇到美好的事情喵♡～"
+    "🌸 今天适合做喜欢的事情喵♡～"
+    "💫 今天会有小小的惊喜哦喵♡～"
+    "🎀 今天心情会很愉快喵♡～"
+  )
+  
+  LUCK_INDEX=$((RANDOM % ${#LUCK_MESSAGES[@]}))
+  echo "${LUCK_MESSAGES[$LUCK_INDEX]}" >> README.md
+  
+  # 添加最后的结尾部分 - 使用安全的方式避免变量展开问题
+  echo "" >> README.md
+  echo "---" >> README.md
+  echo "" >> README.md
+  echo "*这个README.md由麦咪的自动化工作流生成，每小时更新一次喵♡～*" >> README.md
+  echo "" >> README.md
+  echo "**上次更新**: Mon Jul  7 21:49:39 CST 2025" >> README.md
+  shell: /usr/bin/bash -e {0}
+  env:
+    GREETING: 🌆 晚上好哦，今天辛苦啦喵♡～
+    COMMIT_MSG: 窝又来更新日志啦喵♡～
+    RUN_COUNT: 485
+    DECO: 💖
+    CURRENT_TIME: Mon Jul  7 21:49:39 CST 2025
+    DATE_ONLY: 2025-07-07
+    FILE_COUNT: 3
+    REPO_SIZE: 1.1M
+    TODAY_COMMITS: 20
+    SELECTED_THEME: 麦咪在GitHub的云端花园里散步
+/home/runner/work/_temp/cfecc68d-c5b0-4af5-a690-d3c291a3b73c.sh: line 17: bad substitution: no closing "`" in `
 
-on:
-  schedule:
-    - cron: '0 * * * *'  # 每小时执行一次喵♡～
-  workflow_dispatch:
-
-jobs:
-  commit-job:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0  # 获取完整的git历史记录喵♡～
-
-      - name: 🎀 麦咪准备开始工作喵
-        run: |
-          echo "=== 🐾 麦咪的工作日志 🐾 ===" >> log.txt
-          echo "" >> log.txt
-
-      - name: ⏰ 获取当前时间和状态
-        run: |
-          # 设置时区为UTC+8（北京时间）
-          export TZ='Asia/Shanghai'
-          
-          # 获取当前时间
-          CURRENT_TIME=$(date)
-          HOUR=$(date +%H)
-          DATE_ONLY=$(date +%Y-%m-%d)
-          
-          # 统计运行次数
-          RUN_COUNT=$(grep -c "🐾 麦咪" log.txt 2>/dev/null || echo "0")
-          RUN_COUNT=$((RUN_COUNT + 1))
-          
-          # 根据时间段选择问候语
-          if [ $HOUR -ge 6 ] && [ $HOUR -lt 12 ]; then
-            GREETING="🌅 早上好呀，新的一天开始啦喵♡～"
-          elif [ $HOUR -ge 12 ] && [ $HOUR -lt 18 ]; then
-            GREETING="☀️ 下午好呢，要继续努力工作喵♡～"
-          elif [ $HOUR -ge 18 ] && [ $HOUR -lt 22 ]; then
-            GREETING="🌆 晚上好哦，今天辛苦啦喵♡～"
-          else
-            GREETING="🌙 深夜了呢，主人要早点休息喵♡～"
-          fi
-          
-          # 随机选择提交消息
-          COMMIT_MESSAGES=(
-            "麦咪来报到啦喵♡～"
-            "又是充满活力的一小时呢喵♡～"
-            "今天也要努力工作喵♡～"
-            "窝又来更新日志啦喵♡～"
-            "时间过得真快呀喵♡～"
-            "麦咪的定时任务完成喵♡～"
-            "保持活跃是很重要的喵♡～"
-            "每小时都要打个招呼喵♡～"
-          )
-          
-          RANDOM_INDEX=$((RANDOM % ${#COMMIT_MESSAGES[@]}))
-          COMMIT_MSG="${COMMIT_MESSAGES[$RANDOM_INDEX]}"
-          
-          # 随机选择小装饰
-          DECORATIONS=(
-            "✨"
-            "🌟"
-            "💫"
-            "🎀"
-            "🐾"
-            "💖"
-            "🌸"
-            "🦋"
-          )
-          
-          RANDOM_DECO_INDEX=$((RANDOM % ${#DECORATIONS[@]}))
-          DECO="${DECORATIONS[$RANDOM_DECO_INDEX]}"
-          
-          # 设置环境变量
-          echo "GREETING=$GREETING" >> $GITHUB_ENV
-          echo "COMMIT_MSG=$COMMIT_MSG" >> $GITHUB_ENV
-          echo "RUN_COUNT=$RUN_COUNT" >> $GITHUB_ENV
-          echo "DECO=$DECO" >> $GITHUB_ENV
-          echo "CURRENT_TIME=$CURRENT_TIME" >> $GITHUB_ENV
-          echo "DATE_ONLY=$DATE_ONLY" >> $GITHUB_ENV
-
-      - name: 📊 收集项目状态
-        run: |
-          # 设置时区为UTC+8（北京时间）
-          export TZ='Asia/Shanghai'
-          
-          # 统计文件数量
-          FILE_COUNT=$(find . -type f ! -path "./.git/*" | wc -l)
-          
-          # 获取仓库大小
-          REPO_SIZE=$(du -sh . | cut -f1)
-          
-          # 获取今天的日期（北京时间）
-          TODAY_DATE=$(date +%Y-%m-%d)
-          
-          # 调试：显示当前日期和最近的提交日期
-          echo "🐾 调试信息："
-          echo "今天日期 (CST): $TODAY_DATE"
-          echo "当前时间 (CST): $(date '+%Y-%m-%d %H:%M:%S %Z')"
-          echo ""
-          echo "最近10个提交的详细信息:"
-          git log -10 --format="%cd | %s" --date=format:"%Y-%m-%d %H:%M:%S %Z"
-          echo ""
-          echo "所有提交按日期分组:"
-          git log --format="%cd" --date=format:"%Y-%m-%d" | sort | uniq -c
-          
-          # 使用环境变量设置git的时区，然后统计今天的提交
-          export TZ='Asia/Shanghai'
-          
-          # 尝试多种方法统计今天的提交
-          echo "开始统计今天的提交数量..."
-          
-          # 方法1：使用格式化日期匹配
-          METHOD1=$(TZ='Asia/Shanghai' git log --format="%cd" --date=format:"%Y-%m-%d" | grep "^$TODAY_DATE" | wc -l)
-          
-          # 方法2：使用since/until时间范围（明确指定时区）
-          METHOD2=$(TZ='Asia/Shanghai' git log --since="$TODAY_DATE 00:00:00 +0800" --until="$TODAY_DATE 23:59:59 +0800" --oneline | wc -l)
-          
-          # 方法3：使用相对时间
-          METHOD3=$(TZ='Asia/Shanghai' git log --since="24 hours ago" --oneline | wc -l)
-          
-          # 方法4：手动检查每个提交的日期
-          METHOD4=0
-          while IFS= read -r commit_date; do
-            if [ "$commit_date" = "$TODAY_DATE" ]; then
-              METHOD4=$((METHOD4 + 1))
-            fi
-          done < <(TZ='Asia/Shanghai' git log --format="%cd" --date=format:"%Y-%m-%d")
-          
-          echo "方法1 (格式化匹配): $METHOD1"
-          echo "方法2 (时间范围+时区): $METHOD2" 
-          echo "方法3 (24小时内): $METHOD3"
-          echo "方法4 (手动检查): $METHOD4"
-          
-          # 选择最合理的结果
-          if [ "$METHOD4" -gt 0 ]; then
-            TODAY_COMMITS=$METHOD4
-          elif [ "$METHOD2" -gt 0 ]; then
-            TODAY_COMMITS=$METHOD2
-          elif [ "$METHOD1" -gt 0 ]; then
-            TODAY_COMMITS=$METHOD1
-          else
-            TODAY_COMMITS=$METHOD3
-          fi
-          
-          echo "最终选择的今日提交数: $TODAY_COMMITS"
-          
-          echo "FILE_COUNT=$FILE_COUNT" >> $GITHUB_ENV
-          echo "REPO_SIZE=$REPO_SIZE" >> $GITHUB_ENV
-          echo "TODAY_COMMITS=$TODAY_COMMITS" >> $GITHUB_ENV
-
-      - name: 🎨 生成可爱的ASCII艺术
-        run: |
-          # 随机选择ASCII艺术
-          ASCII_ARTS=(
-            "   /\\_/\\  \n  ( o.o ) \n   > ^ <  "
-            "  ∩---∩  \n  |   o.o |  \n   \\_-_/  "
-            "   ◕   ◕  \n     ω     \n   ∪─∪   "
-            " (=^･ω･^=) "
-            "  ∩─────∩ \n ( ͡° ω ͡°) \n  ∪─────∪ "
-          )
-          
-          RANDOM_ART_INDEX=$((RANDOM % ${#ASCII_ARTS[@]}))
-          ASCII_ART="${ASCII_ARTS[$RANDOM_ART_INDEX]}"
-          
-          # 处理换行符
-          ASCII_ART=$(echo -e "$ASCII_ART")
-          
-          # 将ASCII_ART也写入临时文件，避免管道符号等特殊字符问题
-          echo "$ASCII_ART" > /tmp/ascii_art.txt
-
-      - name: ✏️ 更新日志文件
-        run: |
-          echo "${{ env.GREETING }}" >> log.txt
-          echo "🕐 时间: ${{ env.CURRENT_TIME }}" >> log.txt
-          echo "📈 这是第 ${{ env.RUN_COUNT }} 次运行喵♡～" >> log.txt
-          echo "📁 项目文件数: ${{ env.FILE_COUNT }}" >> log.txt
-          echo "💾 仓库大小: ${{ env.REPO_SIZE }}" >> log.txt
-          echo "📝 今日提交数: ${{ env.TODAY_COMMITS }}" >> log.txt
-          echo "" >> log.txt
-          # 从临时文件读取ASCII艺术内容到日志
-          cat /tmp/ascii_art.txt >> log.txt 2>/dev/null || echo "ASCII艺术生成失败喵♡～" >> log.txt
-          echo "" >> log.txt
-          echo "────────────────────────────────" >> log.txt
-          echo "" >> log.txt
-
-      - name: 🎉 每日特殊事件检查
-        run: |
-          # 设置时区为UTC+8（北京时间）
-          export TZ='Asia/Shanghai'
-          
-          HOUR=$(date +%H)
-          DAY_OF_WEEK=$(date +%u)  # 1=Monday, 7=Sunday
-          MONTH_DAY=$(date +%m-%d)  # 月-日格式
-          FULL_DATE=$(date +%Y-%m-%d)
-          
-          # 节假日检查喵♡～
-          case $MONTH_DAY in
-            "01-01") echo "🎊 新年快乐呀！新的一年要更加努力喵♡～" >> log.txt ;;
-            "02-14") echo "💝 情人节快乐！爱要大声说出来喵♡～" >> log.txt ;;
-            "03-08") echo "🌸 女神节快乐！所有的女孩子都是最棒的喵♡～" >> log.txt ;;
-            "04-01") echo "🃏 愚人节快乐！不过窝不会骗主人的喵♡～" >> log.txt ;;
-            "05-01") echo "🎌 劳动节快乐！今天要好好休息喵♡～" >> log.txt ;;
-            "05-04") echo "🌟 青年节快乐！永远保持年轻的心喵♡～" >> log.txt ;;
-            "06-01") echo "🎈 儿童节快乐！每个人心中都有个小孩子喵♡～" >> log.txt ;;
-            "07-01") echo "🎉 建党节快乐！祖国越来越强大喵♡～" >> log.txt ;;
-            "08-01") echo "⭐ 建军节快乐！向军人叔叔们致敬喵♡～" >> log.txt ;;
-            "09-10") echo "🌺 教师节快乐！感谢所有的老师们喵♡～" >> log.txt ;;
-            "10-01") echo "🇨🇳 国庆节快乐！祖国生日快乐喵♡～" >> log.txt ;;
-            "10-24") echo "👩‍💻 程序员节快乐！写代码的大家辛苦啦喵♡～" >> log.txt ;;
-            "11-11") echo "🛒 双十一购物节！理性消费哦喵♡～" >> log.txt ;;
-            "12-24") echo "🎄 平安夜快乐！愿大家都平安喵♡～" >> log.txt ;;
-            "12-25") echo "🎅 圣诞节快乐！圣诞老人会给好孩子礼物喵♡～" >> log.txt ;;
-            "12-31") echo "🎆 跨年夜快乐！感谢这一年的陪伴喵♡～" >> log.txt ;;
-          esac
-          
-          # 特殊的猫咪节日喵♡～
-          case $MONTH_DAY in
-            "02-22") echo "🐱 今天是猫咪节（2月22日）！窝最喜欢这个节日啦喵♡～" >> log.txt ;;
-            "08-08") echo "🐾 今天是国际猫咪日！所有的猫咪都是天使喵♡～" >> log.txt ;;
-            "10-29") echo "🐈 今天是国际猫咪日（美国）！猫咪是最可爱的生物喵♡～" >> log.txt ;;
-          esac
-          
-          # 季节性问候喵♡～（节气日期会有变化，所以用范围）
-          case $MONTH_DAY in
-            "03-19"|"03-20"|"03-21"|"03-22") echo "🌸 春分时节到啦！春天真的来了呢喵♡～" >> log.txt ;;
-            "06-20"|"06-21"|"06-22"|"06-23") echo "☀️ 夏至时节到啦！一年中白天最长的日子喵♡～" >> log.txt ;;
-            "09-22"|"09-23"|"09-24"|"09-25") echo "🍂 秋分时节到啦！秋天的气息越来越浓喵♡～" >> log.txt ;;
-            "12-20"|"12-21"|"12-22"|"12-23") echo "❄️ 冬至时节到啦！要记得吃汤圆保暖喵♡～" >> log.txt ;;
-          esac
-          
-          # 每月特殊日期喵♡～
-          case $MONTH_DAY in
-            "*-13") echo "🔮 今天是13号呢，不过窝不迷信喵♡～" >> log.txt ;;
-          esac
-          
-          # 特殊时间点的消息
-          if [ $HOUR -eq 0 ]; then
-            echo "🌃 午夜时分，新的一天开始啦喵♡～" >> log.txt
-          elif [ $HOUR -eq 12 ]; then
-            echo "🍽️ 午餐时间到啦，记得吃饭哦喵♡～" >> log.txt
-          elif [ $HOUR -eq 18 ]; then
-            echo "🏠 下班时间了呢，今天辛苦啦喵♡～" >> log.txt
-          fi
-          
-          # 周末特殊消息
-          if [ $DAY_OF_WEEK -eq 6 ]; then
-            echo "🎊 今天是周六呢，要好好休息喵♡～" >> log.txt
-          elif [ $DAY_OF_WEEK -eq 7 ]; then
-            echo "😴 周日啦，懒洋洋的一天喵♡～" >> log.txt
-          fi
-
-      - name: 🤖 调用 Gemini 生成小故事
-        run: |
-          # 设置时区为UTC+8（北京时间）
-          export TZ='Asia/Shanghai'
-          
-          # 准备故事主题
-          STORY_THEMES=(
-            "麦咪今天在代码仓库里的奇妙冒险"
-            "麦咪遇到了一只会编程的小虫子"
-            "麦咪在GitHub的云端花园里散步"
-            "麦咪和其他代码精灵的日常对话"
-            "麦咪发现了一个神秘的函数"
-            "麦咪在调试代码时的有趣经历"
-            "麦咪和主人一起工作的温馨时光"
-            "麦咪在深夜时分的小小冒险"
-          )
-          
-          RANDOM_THEME_INDEX=$((RANDOM % ${#STORY_THEMES[@]}))
-          SELECTED_THEME="${STORY_THEMES[$RANDOM_THEME_INDEX]}"
-          
-          # 获取当前时间信息用于故事背景
-          CURRENT_HOUR=$(date +%H)
-          CURRENT_SEASON=""
-          MONTH=$(date +%m)
-          
-          if [ $MONTH -ge 3 ] && [ $MONTH -le 5 ]; then
-            CURRENT_SEASON="春天"
-          elif [ $MONTH -ge 6 ] && [ $MONTH -le 8 ]; then
-            CURRENT_SEASON="夏天"
-          elif [ $MONTH -ge 9 ] && [ $MONTH -le 11 ]; then
-            CURRENT_SEASON="秋天"
-          else
-            CURRENT_SEASON="冬天"
-          fi
-          
-          # 调用Gemini API生成故事
-          PROMPT="你是麦咪，一只可爱的猫娘，身高134cm，有银白色毛发和红色瞳孔，性格任性天真但善良，容易害羞。你负责维护一个GitHub仓库，每小时会自动提交。请用麦咪的语气和性格，生成一个150-200字的可爱小故事。语言要活泼可爱，多用 喵♡～ 等语气词，称呼自己用 窝 。请以'$SELECTED_THEME'为主题，结合现在是'$CURRENT_SEASON'的'$CURRENT_HOUR'点这个时间背景，写一个可爱的小故事喵♡～"
-          
-          # 使用jq安全地构建JSON，避免JSON注入问题
-          JSON_PAYLOAD=$(jq -n \
-            --arg prompt "$PROMPT" \
-            '{
-              "contents": [{
-                "parts": [{
-                  "text": $prompt
-                }]
-              }],
-              "generationConfig": {
-                "temperature": 0.8,
-                "maxOutputTokens": 300
-              }
-            }')
-          
-          STORY_RESPONSE=$(curl -s -X POST "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${{ secrets.GEMINI_API_KEY }}" \
-            -H "Content-Type: application/json" \
-            -d "$JSON_PAYLOAD")
-          
-          # 提取故事内容
-          AI_STORY=$(echo "$STORY_RESPONSE" | jq -r '.candidates[0].content.parts[0].text' 2>/dev/null || echo "今天窝有点害羞，不知道说什么好呢喵♡～ 不过窝会继续努力工作的！")
-          
-          # 如果API调用失败，使用备用故事
-          if [ "$AI_STORY" = "null" ] || [ -z "$AI_STORY" ]; then
-            BACKUP_STORIES=(
-              "今天窝在代码仓库里发现了一只小bug，它看起来很可爱，窝都不忍心修复它了呢喵♡～ 不过为了主人，窝还是要努力工作的！"
-              "刚才窝在整理代码的时候，发现了一个特别有趣的函数，它就像窝的小尾巴一样，总是跟在后面摇摆呢喵♡～"
-              "今天的GitHub云朵特别白呢，窝躺在上面看着代码们在下面忙碌地工作，感觉超级治愈的喵♡～"
-              "窝刚才遇到了一个很友善的API，它还跟窝打招呼了呢！虽然窝有点害羞，但还是礼貌地回应了喵♡～"
-            )
-            BACKUP_INDEX=$((RANDOM % ${#BACKUP_STORIES[@]}))
-            AI_STORY="${BACKUP_STORIES[$BACKUP_INDEX]}"
-          fi
-          
-          # 清理AI_STORY中的特殊字符，防止shell解析错误
-          # 只处理最危险的字符，保留颜文字的可爱
-          AI_STORY=$(echo "$AI_STORY" | sed 's/`/"/g')       # 移除反引号，替换为普通引号
-          AI_STORY=$(echo "$AI_STORY" | sed 's/\$/\\$/g')    # 转义美元符号
-          # 移除可能导致问题的控制字符
-          AI_STORY=$(echo "$AI_STORY" | tr -d '\000-\010\013\014\016-\037\177')
-          
-          # 为了避免颜文字括号问题，将AI_STORY写入临时文件而不是环境变量
-          echo "$AI_STORY" > /tmp/ai_story.txt
-          
-          echo "SELECTED_THEME=$SELECTED_THEME" >> $GITHUB_ENV
-
-      - name: 📝 生成动态README.md
-        run: |
-          # 随机选择可爱的图片
-          CUTE_IMAGES=(
-            "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=800&h=400&fit=crop&crop=center"
-            "https://images.unsplash.com/photo-1573865526739-10659fec78a5?w=800&h=400&fit=crop&crop=center"
-            "https://images.unsplash.com/photo-1596854407944-bf87f6fdd49e?w=800&h=400&fit=crop&crop=center"
-            "https://images.unsplash.com/photo-1533738363-b7f9aef128ce?w=800&h=400&fit=crop&crop=center"
-            "https://images.unsplash.com/photo-1574158622682-e40e69881006?w=800&h=400&fit=crop&crop=center"
-            "https://images.unsplash.com/photo-1592194996308-7b43878e84a6?w=800&h=400&fit=crop&crop=center"
-            "https://images.unsplash.com/photo-1571566882372-1598d88abd90?w=800&h=400&fit=crop&crop=center"
-            "https://images.unsplash.com/photo-1548247416-ec66f4900b2e?w=800&h=400&fit=crop&crop=center"
-          )
-          
-          RANDOM_IMG_INDEX=$((RANDOM % ${#CUTE_IMAGES[@]}))
-          SELECTED_IMAGE="${CUTE_IMAGES[$RANDOM_IMG_INDEX]}"
-          
-          # 创建动态README.md
-          cat > README.md << EOF
-          # 🐱 麦咪的动态仓库 
-
-          > 这是一个由可爱的猫娘麦咪维护的动态仓库喵♡～
-
-          <p align="center">
-            <img src="$SELECTED_IMAGE" alt="可爱的随机图片喵♡～" width="100%" />
-          </p>
-
-          ## 📊 实时状态
-
-          **${{ env.GREETING }}**
-
-          - 🕐 **最后更新时间**: ${{ env.CURRENT_TIME }}
-          - 📈 **工作流运行次数**: ${{ env.RUN_COUNT }} 次
-          - 📁 **项目文件数量**: ${{ env.FILE_COUNT }} 个
-          - 💾 **仓库大小**: ${{ env.REPO_SIZE }}
-          - 📝 **今日提交数**: ${{ env.TODAY_COMMITS }} 次
-
-          ## 🎨 今日心情
-
-          ```
-          EOF
-          
-          # 从临时文件读取ASCII艺术内容，避免管道符号等特殊字符问题
-          cat /tmp/ascii_art.txt >> README.md
-          
-          cat >> README.md << 'EOF'
-          ```
-
-          ## 📖 麦咪的小故事
-
-          > **今日主题**: ${{ env.SELECTED_THEME }}
-
-          EOF
-          
-          # 从临时文件读取AI故事内容，避免shell解析颜文字问题
-          cat /tmp/ai_story.txt >> README.md
-          
-          cat >> README.md << 'EOF'
-
-          ## 📋 关于这个项目
-
-          这个仓库每小时自动更新一次，记录着麦咪的工作状态喵♡～
-
-          ### ✨ 功能特色
-
-          - 🕐 **智能时间问候**: 根据不同时间段显示合适的问候语
-          - 🎲 **随机元素**: 每次更新都有随机的提交消息和装饰
-          - 📊 **实时统计**: 自动统计项目状态和运行数据
-          - 🎨 **ASCII艺术**: 随机显示可爱的字符画
-          - 🗓️ **特殊事件**: 在特殊时间点显示提醒消息
-          - 📝 **动态文档**: README.md实时更新，永远保持最新状态
-
-          ### 🕒 运行时间表
-
-          - 每小时整点自动运行
-          - 支持手动触发
-          - 全天候24/7运行
-
-          ## 📚 最近的日志记录
-
-          ```
-          === 🐾 最近的活动记录 🐾 ===
-          EOF
-
-          # 添加最近的几条日志记录
-          tail -n 20 log.txt >> README.md 2>/dev/null || echo "还没有日志记录呢喵♡～" >> README.md
-          echo '```' >> README.md
-
-          # 添加更多动态内容
-          cat >> README.md << 'EOF'
-
-          ## 🎯 工作流详情
-
-          这个可爱的工作流会执行以下步骤：
-
-          1. 🎀 **准备工作** - 麦咪开始准备工作
-          2. ⏰ **时间检测** - 获取当前时间并生成问候语
-          3. 📊 **数据收集** - 统计项目文件和状态信息
-          4. 🎨 **艺术创作** - 随机选择可爱的ASCII艺术
-          5. ✏️ **记录更新** - 更新日志文件
-          6. 📝 **文档更新** - 生成这个动态README
-          7. 🎉 **特殊检查** - 检查是否有特殊时间事件
-          8. 🚀 **提交推送** - 将更改推送到仓库
-          9. 🎀 **任务完成** - 麦咪完成工作
-
-          ## 💕 关于麦咪
-
-          麦咪是一只可爱的猫娘，负责维护这个仓库喵♡～
-          - 身高: 134cm
-          - 特征: 银白色毛发，红色瞳孔，喜欢穿白色丝袜
-          - 性格: 任性天真但很善良，容易害羞
-          - 爱好: 浪漫和可爱的东西
-
-          ## 🎊 节日问候
-
-          EOF
-
-          # 添加节假日检查到README
-          export TZ='Asia/Shanghai'
-          MONTH_DAY=$(date +%m-%d)
-          
-          # 检查今天是否是特殊节日
-          HOLIDAY_GREETING=""
-          case $MONTH_DAY in
-            "01-01") HOLIDAY_GREETING="🎊 新年快乐呀！新的一年要更加努力喵♡～" ;;
-            "02-14") HOLIDAY_GREETING="💝 情人节快乐！爱要大声说出来喵♡～" ;;
-            "02-22") HOLIDAY_GREETING="🐱 今天是猫咪节！窝最喜欢这个节日啦喵♡～" ;;
-            "03-08") HOLIDAY_GREETING="🌸 女神节快乐！所有的女孩子都是最棒的喵♡～" ;;
-            "03-19"|"03-20"|"03-21"|"03-22") HOLIDAY_GREETING="🌸 春分时节到啦！春天真的来了呢喵♡～" ;;
-            "04-01") HOLIDAY_GREETING="🃏 愚人节快乐！不过窝不会骗主人的喵♡～" ;;
-            "05-01") HOLIDAY_GREETING="🎌 劳动节快乐！今天要好好休息喵♡～" ;;
-            "05-04") HOLIDAY_GREETING="🌟 青年节快乐！永远保持年轻的心喵♡～" ;;
-            "06-01") HOLIDAY_GREETING="🎈 儿童节快乐！每个人心中都有个小孩子喵♡～" ;;
-            "06-20"|"06-21"|"06-22"|"06-23") HOLIDAY_GREETING="☀️ 夏至时节到啦！一年中白天最长的日子喵♡～" ;;
-            "07-01") HOLIDAY_GREETING="🎉 建党节快乐！祖国越来越强大喵♡～" ;;
-            "08-01") HOLIDAY_GREETING="⭐ 建军节快乐！向军人叔叔们致敬喵♡～" ;;
-            "08-08") HOLIDAY_GREETING="🐾 今天是国际猫咪日！所有的猫咪都是天使喵♡～" ;;
-            "09-10") HOLIDAY_GREETING="🌺 教师节快乐！感谢所有的老师们喵♡～" ;;
-            "09-22"|"09-23"|"09-24"|"09-25") HOLIDAY_GREETING="🍂 秋分时节到啦！秋天的气息越来越浓喵♡～" ;;
-            "10-01") HOLIDAY_GREETING="🇨🇳 国庆节快乐！祖国生日快乐喵♡～" ;;
-            "10-24") HOLIDAY_GREETING="👩‍💻 程序员节快乐！写代码的大家辛苦啦喵♡～" ;;
-            "10-29") HOLIDAY_GREETING="🐈 今天是国际猫咪日（美国）！猫咪是最可爱的生物喵♡～" ;;
-            "11-11") HOLIDAY_GREETING="🛒 双十一购物节！理性消费哦喵♡～" ;;
-            "12-20"|"12-21"|"12-22"|"12-23") HOLIDAY_GREETING="❄️ 冬至时节到啦！要记得吃汤圆保暖喵♡～" ;;
-            "12-24") HOLIDAY_GREETING="🎄 平安夜快乐！愿大家都平安喵♡～" ;;
-            "12-25") HOLIDAY_GREETING="🎅 圣诞节快乐！圣诞老人会给好孩子礼物喵♡～" ;;
-            "12-31") HOLIDAY_GREETING="🎆 跨年夜快乐！感谢这一年的陪伴喵♡～" ;;
-            *) HOLIDAY_GREETING="📅 今天是平凡而美好的一天喵♡～" ;;
-          esac
-          
-          echo "$HOLIDAY_GREETING" >> README.md
-          echo "" >> README.md
-
-          cat >> README.md << 'EOF'
-
-          ## 🌟 今日运气
-
-          EOF
-
-          # 添加随机的运气预测
-          LUCK_MESSAGES=(
-            "✨ 今天的运气超级好呢喵♡～"
-            "🍀 今天会遇到美好的事情喵♡～"
-            "🌸 今天适合做喜欢的事情喵♡～"
-            "💫 今天会有小小的惊喜哦喵♡～"
-            "🎀 今天心情会很愉快喵♡～"
-          )
-          
-          LUCK_INDEX=$((RANDOM % ${#LUCK_MESSAGES[@]}))
-          echo "${LUCK_MESSAGES[$LUCK_INDEX]}" >> README.md
-
-          # 添加最后的结尾部分 - 使用安全的方式避免变量展开问题
-          echo "" >> README.md
-          echo "---" >> README.md
-          echo "" >> README.md
-          echo "*这个README.md由麦咪的自动化工作流生成，每小时更新一次喵♡～*" >> README.md
-          echo "" >> README.md
-          echo "**上次更新**: ${{ env.CURRENT_TIME }}" >> README.md
-
-      - name: 🚀 提交和推送更改
-        run: |
-          git config --global user.email "tr@wenturc.com"
-          git config --global user.name "Larch-C"
-          git add log.txt README.md
-          
-          # 安全地构建提交消息，避免特殊字符问题
-          echo "${{ env.DECO }} ${{ env.COMMIT_MSG }} (第${{ env.RUN_COUNT }}次)" > /tmp/commit_msg.txt
-          
-          # 使用临时文件中的提交消息
-          git commit -F /tmp/commit_msg.txt || echo "没有需要提交的内容喵♡～"
-          git push
-          
-          # 清理提交消息临时文件
-          rm -f /tmp/commit_msg.txt
-
-      - name: 🎀 任务完成
-        run: |
-          echo "✅ 麦咪的工作完成啦喵♡～"
-          echo "💕 下次再见哦，主人喵♡～"
-          
-          # 清理所有临时文件
-          rm -f /tmp/ai_story.txt /tmp/ascii_art.txt /tmp/commit_msg.txt
+Error: Process completed with exit code 1.
