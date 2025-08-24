@@ -1,0 +1,70 @@
+name: Minimal write with GITHUB_TOKEN
+
+on:
+  workflow_dispatch:        # 手动触发（可按需改为 schedule 等）
+  
+permissions:
+  contents: write           # 最小写入权限，仅限仓库内容写入
+
+jobs:
+  update-file:
+    runs-on: ubuntu-latest
+    concurrency:
+      group: minimal-write-job
+      cancel-in-progress: false
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+          persist-credentials: true
+
+      - name: Setup git identity
+        run: |
+          set -euo pipefail
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git config user.name "github-actions[bot]"
+
+      - name: Update plugin_cache_original.json
+        run: |
+          set -euo pipefail
+          # 这里放你的更新逻辑，例如从之前步骤生成的文件覆盖或替换内容
+          # 示例：写入时间戳（替换为你真实的生成/转换命令）
+          echo "{ \"updated_at\": \"$(date -u +%Y-%m-%dT%H:%M:%SZ)\" }" > plugin_cache_original.json
+
+          # 仅添加目标文件，避免把其他未预期变更也提交
+          git add plugin_cache_original.json
+
+          # 如果没有实际变更则退出
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+            exit 0
+          fi
+
+          # 提交
+          commit_message="chore: update plugin_cache_original.json - $(date -u '+%Y-%m-%d %H:%M:%S UTC')"
+          git commit -m "$commit_message"
+
+      - name: Push changes (safe attempt, no force)
+        run: |
+          set -euo pipefail
+          # 尝试直接 push（fast-forward）
+          if git push origin HEAD:main; then
+            echo "✅ Pushed successfully"
+            exit 0
+          fi
+
+          # 若被拒绝，尝试获取远端最新并 rebase 后再推
+          echo "Push rejected; attempting fetch + rebase"
+          git fetch origin main
+          git rebase origin/main
+
+          if git push origin HEAD:main; then
+            echo "✅ Pushed after rebase"
+          else
+            echo "❌ Push failed after rebase — aborting to avoid force-push"
+            git rebase --abort || true
+            exit 1
+          fi
